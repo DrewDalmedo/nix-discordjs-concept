@@ -13,7 +13,7 @@
   #languages.c.enable = true;
 
   # See the following links for more details:
-  # Documentation           ->  https://devenv.sh/languages/
+  # Languages           ->  https://devenv.sh/languages/
 
   # For the sake of time I chose to use javascript for this project,
   # but devenv also supports using typescript.
@@ -36,6 +36,10 @@
   processes = {
     bot.exec = "node ."; # when you run 'devenv up', the bot will start
   };
+
+  # See the following links for more details:
+  # Processes           ->  https://devenv.sh/processes/
+  # Services            ->  https://devenv.sh/services/
 
   # See full reference at https://devenv.sh/reference/options/
 }
