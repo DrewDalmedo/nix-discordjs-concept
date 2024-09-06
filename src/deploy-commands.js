@@ -38,6 +38,12 @@ const rest = new REST().setToken(process.env.BOT_TOKEN);
 			{ body: commands },
 		);
 
+		// registers commands globally, commented for reference
+		// const data = await rest.put(
+			// Routes.applicationCommands(clientId),
+			// { body: commands },
+		// );
+
 		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
 	} catch (error) {
 		console.error(error);
