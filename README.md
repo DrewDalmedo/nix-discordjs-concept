@@ -25,7 +25,7 @@ The Nix programming language and package manager accomplishes both of these goal
 
 ### What is Nix?
 
-[Nix](https://nixos.org) is a DSL that follows the functional programming language paradigm. It allows for easy reproductions of environments and applications.
+[Nix](https://nixos.org) is a DSL that follows the functional programming language paradigm. It allows for easy reproductions of environments and applications through exact dependency version matching.
 
 ### What is NixOS?
 
@@ -44,7 +44,7 @@ To run your own Discord bot, you'll need the following information:
 - Your bot's `application ID`
 - The `guild ID` (Discord server ID) you want to register the bot's commands for
 
-Create a .env file and add the following fields:
+After cloning the repo, create a .env file and add the following fields:
 
 ```
 BOT_TOKEN=(your bot token)
@@ -56,34 +56,31 @@ Once you have created the .env file and entered your bot and server details, you
 
 ## Running the bot
 
-There are two methods for running the bot that are included in this example project:
+To run the bot, run the following command:
 
-1. Using Nix flakes
-2. Using devenv
+```
+nix develop --impure --command bash -c "devenv up"
+```
 
-Nix flakes are accessible to everyone who installs Nix. However, the syntax of pure Nix flakes is harder to initially understand.
+This does the following:
 
-[devenv](https://devenv.sh/) accomplishes what Nix flakes can do all while having a much simpler and more concise syntax. However, devenv
-is not installed by default on fresh Nix / NixOS installations.
+1. Installs all the required dependencies for the bot
+2. Enters a development shell with those dependencies active
+3. Starts the bot as a process
 
-Both methods have been included in this example project to illustrate what each would look like when implemented.
-
-### Using Nix flakes
+This is all accomplished by using [devenv](https://devenv.sh).
 
 ### Using devenv
 
-Before continuing, make sure you have devenv installed. If you don't, you can create a temporary shell with devenv installed by running:
+[devenv](https://devenv.sh) enables developers to enter isolated development shells which contain the exact versions of dependencies other developers on their team are using.
+Additionally, devenv's Nix bindings are more clear and succinct than Nix's regular syntax for managing development shells.
 
-```
-nix-shell -p devenv
-```
-
-#### Entering a development shell 
+#### Entering a devenv development shell 
 
 To enter a development shell with all the necessary dependencies for the project pre-installed, simply run the following:
 
 ```
-devenv shell
+nix develop --impure
 ```
 
 #### Registering commands
@@ -102,9 +99,11 @@ To run the bot while in a devenv shell, simply run the project as you normally w
 node .
 ```
 
+Alternatively, you could run the bot as a service.
+
 #### Running the bot as a service
 
-To run the bot as a foreground service WITHOUT entering a development shell, simply run:
+To run the bot as a foreground service while in a development shell, simply run:
 
 ```
 devenv up

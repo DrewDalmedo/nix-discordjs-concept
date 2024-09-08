@@ -1,52 +1,76 @@
 {
-  description = "A very basic flake";
-
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:cachix/devenv-nixpkgs/rolling";
+    systems.url = "github:nix-systems/default";
+    devenv.url = "github:cachix/devenv";
+    devenv.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, flake-utils }: 
-    flake-utils.lib.eachDefaultSystem (system: {
-      let 
-        pkgs = import nixpkgs { inherit system; };
-      in 
-      {
-        devShell = pkgs.mkShell {
-          buildInputs = [
-            pkgs.nodejs
-            pkgs.pnpm
-          ];
-        };
+  nixConfig = {
+    extra-trusted-public-keys = "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=";
+    extra-substituters = "https://devenv.cachix.org";
+  };
 
-        packages.bot = pkgs.stdenv.mkDerivation {
-          pname = "nix-discordjs-concept";
-          version = "1.0.0";
-          src = ./.;
-          buildInputs = [ 
-            pkgs.nodejs
-            pkgs.pnpm
-          ];
+  outputs = { self, nixpkgs, devenv, systems, ... } @ inputs:
+    let
+      forEachSystem = nixpkgs.lib.genAttrs (import systems);
+    in
+    {
+      packages = forEachSystem (system: {
+        devenv-up = self.devShells.${system}.default.config.procfileScript;
+      });
 
-          buildPhase = ''
-            pnpm install
-          '';
+      devShells = forEachSystem
+        (system:
+          let
+            pkgs = nixpkgs.legacyPackages.${system};
+          in
+          {
+            default = devenv.lib.mkShell {
+              inherit inputs pkgs;
+              modules = [
+                {
+                  # Languages you wish to use in development shells can be programmatically enabled: 
+                  languages.nix.enable = true;
 
-          installPhase = ''
-            mkdir -p $out/bin
-            cp -r src $out/bin/
-            cp -r node_modules $out/bin/
-            echo "#!/usr/bin/env node" > $out/bin/run-bot
-            echo "node ." >> $out/bin/run-bot
-            chmod +x $out/bin/run-bot
-          '';
-        };
+                  # This will install all the necessary files needed to compile / run code written for
+                  # that language. It will also install the industry-standard tooling for that language.
+                  # For example, the following would not only install gcc, but also make:
+                  #languages.c.enable = true;
 
-        # run the bot in foreground
-        apps.run-bot = {
-          type = "app";
-          program = "${self.packages.${system}.bot}/bin/run-bot";
-        };
-      }
-    });
-}
+                  # See the following links for more details:
+                  # Languages           ->  https://devenv.sh/languages/
+
+                  # For the sake of time I chose to use javascript for this project,
+                  # but devenv also supports using typescript.
+                  languages.javascript = {
+                    enable = true;
+                    pnpm = {  # pnpm is an implementation of npm with significantly faster performance
+                      enable = true; 
+                      install.enable = true; # auto-install all npm packages on entering a shell
+                    };
+                  };
+
+                  # devenv has full dotenv integration, making the inclusion of dotenv in packages.json
+                  # unnecessary. However, this integration is disabled for the sake of showing how converting to
+                  # devenv may look when writing a configuration for an existing codebase without any rewrites
+                  dotenv.enable = false;
+
+                  # Processes and services are primarily used for starting things such as development servers, 
+                  # SQL databases, etc. Since this example project is small, the only process here is for starting
+                  # the Discord bot.
+                  processes = {
+                    bot.exec = "node ."; # when you run 'devenv up', the bot will start
+                  };
+
+                  # See the following links for more details:
+                  # Processes           ->  https://devenv.sh/processes/
+                  # Services            ->  https://devenv.sh/services/
+
+                  # See full reference at https://devenv.sh/reference/options/
+                }
+              ];
+            };
+          });
+      };
+  }
