@@ -59,7 +59,7 @@ Once you have created the .env file and entered your bot and server details, you
 To run the bot, run the following command:
 
 ```
-nix develop --impure --command bash -c "devenv up"
+nix develop --impure --command devenv up
 ```
 
 This does the following:
