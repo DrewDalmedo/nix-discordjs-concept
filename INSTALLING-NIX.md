@@ -2,7 +2,7 @@
 
 ## Installing Nix on Unix-like / non-NixOS Linux Operating Systems
 
-On non-NixOS Unix-like systems, it is recommended to use the [Determinate Systems](https://determinate.systems/nix/) nix installer.
+On non-NixOS Unix-like systems, it is recommended to use the [Determinate Systems](https://determinate.systems/nix/) Nix installer.
 This installer has many sensible defaults, including:
 
 - Enabling the *unified CLI*, which is more robust than the default method of using Nix
