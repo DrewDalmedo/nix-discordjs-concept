@@ -60,7 +60,9 @@
                   # SQL databases, etc. Since this example project is small, the only process here is for starting
                   # the Discord bot.
                   processes = {
-                    bot.exec = "node ."; # when you run 'devenv up', the bot will start
+                    # when you run 'devenv up', the bot will register commands and start
+                    register.exec = "pnpm run register";
+                    bot.exec = "node ."; 
                   };
 
                   # See the following links for more details:

@@ -66,7 +66,8 @@ This does the following:
 
 1. Installs all the required dependencies for the bot
 2. Enters a development shell with those dependencies active
-3. Starts the bot as a process
+3. Registers all the implemented slash commands for the server ID provided
+4. Starts the bot as a process
 
 This is all accomplished by using [devenv](https://devenv.sh).
 
