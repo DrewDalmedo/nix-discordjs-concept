@@ -126,6 +126,9 @@ devenv processes stop
 
 ## References
 [Nix / NixOS](https://nixos.org/)
+
 [Nix Flakes](https://nixos.wiki/wiki/Flakes)
+
 [devenv](https://devenv.sh/)
+
 [The Official discord.js Guide](https://discordjs.guide)
