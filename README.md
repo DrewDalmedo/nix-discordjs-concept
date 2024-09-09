@@ -112,13 +112,11 @@ devenv up
 
 To kill the process, press F10.
 
-You can also run the service as a daemon. To do this, run:
+You can also run the service in the background. To do this, run:
 
 ```
 devenv up -d
 ```
-
-This will start the process in the background.
 
 To kill the background process, run:
 
